@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useTour } from './TourContext';
 import { Bear } from './Bear';
-import { blip, confetti } from './fx';
+import { confetti } from './fx';
 
 const PAD = 8;
 
 /** Изписва текста буква по буква; при изключено — показва целия наведнъж. */
-function useTypewriter(text: string, enabled: boolean, onTick?: () => void) {
+function useTypewriter(text: string, enabled: boolean) {
   const [n, setN] = useState(0);
   useEffect(() => {
     if (!enabled) {
@@ -20,11 +20,9 @@ function useTypewriter(text: string, enabled: boolean, onTick?: () => void) {
     const id = window.setInterval(() => {
       i += 1;
       setN(i);
-      if (i % 4 === 0) onTick?.();
       if (i >= text.length) window.clearInterval(id);
     }, 22);
     return () => window.clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, enabled]);
   return text.slice(0, n);
 }
@@ -32,10 +30,10 @@ function useTypewriter(text: string, enabled: boolean, onTick?: () => void) {
 export function TourOverlay() {
   const {
     active, index, total, paused, rect, step, duration,
-    speed, voice, next, prev, stop, togglePause, goTo, cycleSpeed, toggleVoice,
+    speed, next, prev, stop, togglePause, goTo, cycleSpeed,
   } = useTour();
 
-  const typed = useTypewriter(step?.text ?? '', active && !voice, () => blip(560));
+  const typed = useTypewriter(step?.text ?? '', active);
 
   // Конфети на финалната стъпка
   useEffect(() => {
@@ -78,9 +76,6 @@ export function TourOverlay() {
           <div className="mb-1.5 flex items-start justify-between gap-2">
             <div className="text-lg font-bold text-brand-dark">{step.title}</div>
             <div className="flex shrink-0 gap-1">
-              <Mini onClick={toggleVoice} title={voice ? 'Изключи гласа' : 'Чети на глас'} active={voice}>
-                {voice ? '🔊' : '🔈'}
-              </Mini>
               <Mini onClick={cycleSpeed} title="Скорост">
                 {speed}×
               </Mini>
@@ -88,8 +83,8 @@ export function TourOverlay() {
           </div>
 
           <p className="min-h-[60px] text-[15px] leading-relaxed text-slate-700">
-            {voice ? step.text : typed}
-            {!voice && typed.length < step.text.length && <span className="tour-caret">▌</span>}
+            {typed}
+            {typed.length < step.text.length && <span className="tour-caret">▌</span>}
           </p>
 
           {/* прогрес лента */}

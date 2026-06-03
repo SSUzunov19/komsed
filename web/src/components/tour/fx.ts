@@ -1,37 +1,5 @@
-/** Леки ефекти за тура: „блип" звук и конфети — без външни библиотеки. */
+/** Лек ефект за тура: конфети — без външни библиотеки. */
 
-let audioCtx: AudioContext | null = null;
-
-function getCtx(): AudioContext | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    if (!audioCtx) {
-      const Ctor = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      audioCtx = new Ctor();
-    }
-    return audioCtx;
-  } catch {
-    return null;
-  }
-}
-
-/** Кратко тихо „блип" звукче (като при писане на текст). */
-export function blip(freq = 520) {
-  const ctx = getCtx();
-  if (!ctx) return;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.value = freq + Math.round((freq / 12) * (Math.sin(ctx.currentTime * 7) || 0));
-  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.04, ctx.currentTime + 0.005);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.06);
-  osc.connect(gain).connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.07);
-}
-
-/** Конфети експлозия за ~2.5 секунди. */
 export function confetti() {
   if (typeof window === 'undefined') return;
   const canvas = document.createElement('canvas');

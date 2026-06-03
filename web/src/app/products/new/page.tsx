@@ -1,14 +1,62 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { createProduct, type FormState } from '../actions';
 import { Card } from '@/components/ui';
 
 const initial: FormState = {};
 
+// Демо стойности, които турът попълва (само за показ — не записва)
+const DEMO_FIELDS: { name: string; value: string; type: boolean }[] = [
+  { name: 'name', value: 'Плюшено мече Комсе', type: true },
+  { name: 'sku', value: 'KOMSE-TOUR', type: true },
+  { name: 'price', value: '29.99', type: false },
+  { name: 'promo_price', value: '24.99', type: false },
+  { name: 'qty', value: '50', type: false },
+  { name: 'brand', value: 'КОМСЕД', type: true },
+];
+
 export default function NewProductPage() {
   const [state, formAction, pending] = useActionState(createProduct, initial);
+  const timers = useRef<number[]>([]);
+
+  // Турът може да попълни формата автоматично на живо
+  useEffect(() => {
+    const fill = () => {
+      timers.current.forEach(clearTimeout);
+      timers.current = [];
+      const form = document.querySelector('form');
+      if (!form) return;
+      const setVal = (el: HTMLInputElement | null, v: string) => {
+        if (!el) return;
+        el.value = v;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      let delay = 200;
+      for (const f of DEMO_FIELDS) {
+        const el = form.querySelector<HTMLInputElement>(`[name="${f.name}"]`);
+        if (!el) continue;
+        const start = delay;
+        timers.current.push(window.setTimeout(() => el.focus(), start));
+        if (f.type) {
+          for (let k = 1; k <= f.value.length; k++) {
+            timers.current.push(window.setTimeout(() => setVal(el, f.value.slice(0, k)), start + k * 45));
+          }
+          delay = start + f.value.length * 45 + 300;
+        } else {
+          timers.current.push(window.setTimeout(() => setVal(el, f.value), start + 150));
+          delay = start + 450;
+        }
+      }
+    };
+    window.addEventListener('komsed:fill-product', fill);
+    const captured = timers.current;
+    return () => {
+      window.removeEventListener('komsed:fill-product', fill);
+      captured.forEach(clearTimeout);
+    };
+  }, []);
 
   return (
     <div>
