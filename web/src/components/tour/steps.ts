@@ -8,6 +8,9 @@ export type TourStep = {
   title: string;
   text: string;
   mood: Mood;
+  demoSql?: string; // ако е зададено — турът сам въвежда и изпълнява тази заявка
+  durationMs?: number; // персонализирано време за авто-прелистване
+  dim?: boolean; // затъмнение на фона (по подразбиране true)
 };
 
 export const TOUR_STEPS: TourStep[] = [
@@ -89,10 +92,18 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     path: '/sql',
-    selector: '[data-tour="sql-editor"]',
-    title: 'Опитай сам!',
-    text: 'Тук пишеш заявка и натискаш „Изпълни" — изпълнява се истинска SQL заявка срещу базата. Само SELECT, за да е безопасно!',
-    mood: 'talking',
+    title: 'Гледай сега! 🪄',
+    text: 'Ще напиша заявка за топ клиентите и ще я изпълня вместо теб — гледай как резултатите се появяват на живо отдолу!',
+    mood: 'cheer',
+    dim: false,
+    durationMs: 13000,
+    demoSql: `SELECT cu.first_name || ' ' || cu.last_name AS клиент,
+       COUNT(o.order_id) AS поръчки, SUM(o.total) AS похарчено
+FROM customer cu
+JOIN orders o ON cu.customer_id = o.customer_id
+WHERE o.status = 'delivered'
+GROUP BY cu.first_name, cu.last_name
+ORDER BY похарчено DESC`,
   },
   {
     path: '/',

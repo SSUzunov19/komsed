@@ -135,6 +135,16 @@ body {
   98% { transform: rotate(16deg); }
 }
 
+.tour-caret {
+  margin-left: 1px;
+  color: var(--color-brand);
+  animation: tour-caret 0.8s step-end infinite;
+}
+@keyframes tour-caret {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bear-bob, .bear-arm-wave, .bear-mouth-talk, .tour-btn-bear, .tour-spot { animation: none; }
+  .bear-bob, .bear-arm-wave, .bear-mouth-talk, .tour-btn-bear, .tour-spot, .tour-caret { animation: none; }
 }

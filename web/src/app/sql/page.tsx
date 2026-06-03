@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState, startTransition } from 'react';
 import { runQuery, type QueryResult } from './actions';
 import { Card } from '@/components/ui';
 
@@ -70,6 +70,20 @@ ORDER BY p.qty_in_stock DESC`,
 export default function SqlConsolePage() {
   const [state, formAction, pending] = useActionState(runQuery, initial);
   const [query, setQuery] = useState('');
+
+  // Турът може да въведе и изпълни заявка автоматично (жив демо)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const sql = (e as CustomEvent<{ sql?: string }>).detail?.sql;
+      if (!sql) return;
+      setQuery(sql);
+      const fd = new FormData();
+      fd.set('query', sql);
+      startTransition(() => formAction(fd));
+    };
+    window.addEventListener('komsed:run-sql', handler);
+    return () => window.removeEventListener('komsed:run-sql', handler);
+  }, [formAction]);
 
   return (
     <div>

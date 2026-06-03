@@ -22,12 +22,17 @@ type TourState = {
   rect: DOMRect | null;
   step: TourStep | null;
   total: number;
+  speed: number;
+  voice: boolean;
+  duration: number;
   start: () => void;
   stop: () => void;
   next: () => void;
   prev: () => void;
   goTo: (i: number) => void;
   togglePause: () => void;
+  cycleSpeed: () => void;
+  toggleVoice: () => void;
 };
 
 const TourCtx = createContext<TourState | null>(null);
@@ -49,8 +54,23 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const [paused, setPaused] = useState(false);
   const [ready, setReady] = useState(false);
   const [rect, setRect] = useState<DOMRect | null>(null);
+  const [speed, setSpeed] = useState(1);
+  const [voice, setVoice] = useState(false);
 
   const step = active ? TOUR_STEPS[index] : null;
+  const duration = (step?.durationMs ?? STEP_DURATION_MS) / speed;
+
+  const cycleSpeed = useCallback(() => setSpeed((s) => (s === 1 ? 1.5 : s === 1.5 ? 2 : 1)), []);
+  const toggleVoice = useCallback(() => {
+    setVoice((v) => {
+      const nv = !v;
+      try {
+        localStorage.setItem('komsed-tour-voice', nv ? '1' : '0');
+      } catch {}
+      if (!nv && typeof window !== 'undefined') window.speechSynthesis?.cancel();
+      return nv;
+    });
+  }, []);
 
   const start = useCallback(() => {
     setIndex(0);
@@ -61,6 +81,7 @@ export function TourProvider({ children }: { children: ReactNode }) {
   const stop = useCallback(() => {
     setActive(false);
     setRect(null);
+    if (typeof window !== 'undefined') window.speechSynthesis?.cancel();
   }, []);
 
   const next = useCallback(() => {
@@ -146,13 +167,42 @@ export function TourProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!active || paused || !ready) return;
     if (index >= TOUR_STEPS.length - 1) return; // на последната спираме
-    const t = window.setTimeout(() => next(), STEP_DURATION_MS);
+    const t = window.setTimeout(() => next(), duration);
     return () => clearTimeout(t);
-  }, [active, paused, ready, index, next]);
+  }, [active, paused, ready, index, next, duration]);
 
-  // Авто-старт при ?tour=1
+  // Жив SQL демо — изпраща заявката към страницата
+  useEffect(() => {
+    if (!active || !ready) return;
+    const current = TOUR_STEPS[index];
+    if (!current.demoSql) return;
+    const t = window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('komsed:run-sql', { detail: { sql: current.demoSql } }));
+    }, 700);
+    return () => clearTimeout(t);
+  }, [active, ready, index]);
+
+  // Гласов разказ (TTS)
+  useEffect(() => {
+    if (!active || !ready || !voice || typeof window === 'undefined') return;
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(`${TOUR_STEPS[index].title}. ${TOUR_STEPS[index].text}`);
+    const bg = synth.getVoices().find((v) => v.lang?.toLowerCase().startsWith('bg'));
+    if (bg) u.voice = bg;
+    u.lang = 'bg-BG';
+    u.rate = 1;
+    synth.speak(u);
+    return () => synth.cancel();
+  }, [active, ready, index, voice]);
+
+  // Зареждане на предпочитанието за глас + авто-старт при ?tour=1
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    try {
+      if (localStorage.getItem('komsed-tour-voice') === '1') setVoice(true);
+    } catch {}
     if (new URLSearchParams(window.location.search).get('tour') === '1') {
       const t = window.setTimeout(start, 600);
       return () => clearTimeout(t);
@@ -185,12 +235,17 @@ export function TourProvider({ children }: { children: ReactNode }) {
         rect,
         step,
         total: TOUR_STEPS.length,
+        speed,
+        voice,
+        duration,
         start,
         stop,
         next,
         prev,
         goTo,
         togglePause,
+        cycleSpeed,
+        toggleVoice,
       }}
     >
       {children}
