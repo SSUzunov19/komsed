@@ -68,6 +68,7 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     path: '/orders/1',
+    selector: '[data-tour="order-items"]',
     title: 'Детайл на поръчка',
     text: 'Ето всички артикули в поръчката — това е JOIN между четири таблици: поръчки, клиенти, артикули и продукти. Истинска релационна магия! ✨',
     mood: 'cheer',

@@ -43,8 +43,8 @@ export function TourOverlay() {
         onClick={(e) => e.stopPropagation()}
       >
         <div key={index} className="tour-bubble">
-          <div className="mb-1 text-sm font-bold text-brand-dark">{step.title}</div>
-          <p className="text-[13px] leading-relaxed text-slate-700">{step.text}</p>
+          <div className="mb-1.5 text-lg font-bold text-brand-dark">{step.title}</div>
+          <p className="text-[15px] leading-relaxed text-slate-700">{step.text}</p>
 
           {/* прогрес лента */}
           <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-slate-100">
@@ -95,7 +95,7 @@ export function TourOverlay() {
         </div>
 
         <div className="tour-bear">
-          <Bear mood={step.mood} />
+          <Bear mood={step.mood} size={188} />
         </div>
       </div>
     </div>

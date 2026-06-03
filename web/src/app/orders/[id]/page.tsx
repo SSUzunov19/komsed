@@ -84,7 +84,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
       </div>
 
       <h2 className="mb-3 font-semibold text-slate-700">Артикули</h2>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" tour="order-items">
         <div className="thin-scroll overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
