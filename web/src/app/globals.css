@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #048a81;
+  --color-brand-dark: #2e4057;
+  --color-brand-light: #e6f4f3;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f5f7fa;
+  color: #1f2933;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Тънък скролбар за таблици и SQL конзолата */
+.thin-scroll::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
