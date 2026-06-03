@@ -1,37 +1,78 @@
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
+import type { Pool as PgPool } from 'pg';
 
-let client: NeonQueryFunction<false, false> | null = null;
-
-function getClient(): NeonQueryFunction<false, false> {
-  if (!client) {
-    const url = process.env.DATABASE_URL;
-    if (!url) {
-      throw new Error(
-        'Липсва DATABASE_URL. Добавете connection string от Neon в .env.local (виж .env.example).',
-      );
-    }
-    client = neon(url);
-  }
-  return client;
-}
+type Rows = Record<string, unknown>[];
 
 /**
- * Neon serverless клиент с lazy инициализация (за да не чупи `next build`,
- * ако променливата още не е зададена).
+ * Унифициран SQL клиент.
  *
- * Употреба:
  *   const rows = await sql`SELECT * FROM product WHERE product_id = ${id}`;
  *   const rows = await sql.query('SELECT * FROM product');
  *
- * Параметрите в tagged template се вмъкват като placeholder-и ($1, $2...) —
+ * Параметрите в tagged template се вмъкват като placeholder-и ($1, $2…) —
  * защита срещу SQL injection.
+ *
+ * В production (Neon) използва serverless HTTP драйвера; локално срещу
+ * обикновен PostgreSQL използва node-postgres. Изборът е по connection string-а.
  */
-export const sql = new Proxy((() => {}) as unknown as NeonQueryFunction<false, false>, {
-  apply(_target, _thisArg, args: Parameters<NeonQueryFunction<false, false>>) {
-    return getClient()(...(args as Parameters<NeonQueryFunction<false, false>>));
-  },
-  get(_target, prop: string | symbol) {
-    const value = getClient()[prop as keyof NeonQueryFunction<false, false>];
-    return typeof value === 'function' ? value.bind(getClient()) : value;
-  },
-});
+type Sql = {
+  (strings: TemplateStringsArray, ...values: unknown[]): Promise<Rows>;
+  query: (text: string, params?: unknown[]) => Promise<Rows>;
+};
+
+let neonClient: NeonQueryFunction<false, false> | null = null;
+let pgPool: PgPool | null = null;
+
+function databaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      'Липсва DATABASE_URL. Добавете connection string в .env.local (виж .env.example).',
+    );
+  }
+  return url;
+}
+
+function isNeon(url: string): boolean {
+  return url.includes('neon.tech') || url.includes('neon.build');
+}
+
+function getNeon(url: string): NeonQueryFunction<false, false> {
+  if (!neonClient) neonClient = neon(url);
+  return neonClient;
+}
+
+async function getPgPool(url: string): Promise<PgPool> {
+  if (!pgPool) {
+    const { Pool } = await import('pg');
+    pgPool = new Pool({ connectionString: url });
+  }
+  return pgPool;
+}
+
+function templateToText(strings: TemplateStringsArray, values: unknown[]): string {
+  return strings.reduce(
+    (acc, part, i) => acc + part + (i < values.length ? `$${i + 1}` : ''),
+    '',
+  );
+}
+
+export const sql: Sql = (async (strings: TemplateStringsArray, ...values: unknown[]) => {
+  const url = databaseUrl();
+  if (isNeon(url)) {
+    return (await getNeon(url)(strings, ...values)) as Rows;
+  }
+  const pool = await getPgPool(url);
+  const result = await pool.query(templateToText(strings, values), values);
+  return result.rows as Rows;
+}) as Sql;
+
+sql.query = async (text: string, params: unknown[] = []) => {
+  const url = databaseUrl();
+  if (isNeon(url)) {
+    return (await getNeon(url).query(text, params)) as Rows;
+  }
+  const pool = await getPgPool(url);
+  const result = await pool.query(text, params);
+  return result.rows as Rows;
+};
