@@ -29,7 +29,7 @@ export default async function PromotionsPage() {
   return (
     <div>
       <PageHeader title="🏷️ Промоции" />
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" tour="list">
         <div className="thin-scroll overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

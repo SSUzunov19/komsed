@@ -23,7 +23,7 @@ export default async function CustomersPage() {
   return (
     <div>
       <PageHeader title="👤 Клиенти" action={{ href: '/customers/new', label: '+ Добави клиент' }} />
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" tour="list">
         <div className="thin-scroll overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

@@ -79,7 +79,7 @@ export default function SqlConsolePage() {
         Postgres базата. Заявки за промяна (INSERT/UPDATE/DELETE) са блокирани.
       </p>
 
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap gap-2" data-tour="sql-examples">
         {EXAMPLES.map((ex) => (
           <button
             key={ex.label}
@@ -92,7 +92,7 @@ export default function SqlConsolePage() {
         ))}
       </div>
 
-      <Card className="p-4">
+      <Card className="p-4" tour="sql-editor">
         <form action={formAction}>
           <textarea
             name="query"

@@ -25,7 +25,7 @@ export default async function CategoriesPage() {
   return (
     <div>
       <PageHeader title="🗂️ Категории" />
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" tour="list">
         <div className="thin-scroll overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

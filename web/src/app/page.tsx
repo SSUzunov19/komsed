@@ -45,7 +45,7 @@ export default async function HomePage() {
         </p>
       </div>
 
-      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4" data-tour="stats">
         {STATS.map((s) => (
           <Link key={s.key} href={s.href}>
             <Card className="p-6 text-center transition-shadow hover:shadow-md">
@@ -56,7 +56,7 @@ export default async function HomePage() {
         ))}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" data-tour="tiles">
         {TILES.map((t) => (
           <Card key={t.href} className="flex flex-col p-5">
             <div className="text-2xl">{t.icon}</div>

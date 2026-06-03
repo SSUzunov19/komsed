@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { TourButton } from './tour/TourButton';
 
 const LINKS = [
   { href: '/products', label: 'Продукти' },
@@ -17,7 +18,7 @@ export function Navbar() {
 
   return (
     <nav className="bg-gradient-to-r from-brand-dark to-brand text-white shadow-md">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-3">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-1 gap-y-2 px-4 py-3" data-tour="nav">
         <Link href="/" className="mr-auto flex items-center gap-2 text-xl font-bold">
           <span className="text-2xl">🧸</span> КОМСЕД
         </Link>
@@ -35,6 +36,7 @@ export function Navbar() {
             </Link>
           );
         })}
+        <TourButton />
       </div>
     </nav>
   );

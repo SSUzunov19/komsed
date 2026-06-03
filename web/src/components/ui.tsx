@@ -1,9 +1,20 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
-export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = '',
+  tour,
+}: {
+  children: ReactNode;
+  className?: string;
+  tour?: string;
+}) {
   return (
-    <div className={`rounded-xl border border-slate-100 bg-white shadow-sm ${className}`}>
+    <div
+      data-tour={tour}
+      className={`rounded-xl border border-slate-100 bg-white shadow-sm ${className}`}
+    >
       {children}
     </div>
   );
@@ -14,7 +25,7 @@ export function PageHeader({
   action,
 }: {
   title: string;
-  action?: { href: string; label: string };
+  action?: { href: string; label: string; tour?: string };
 }) {
   return (
     <div className="mb-5 flex items-center justify-between gap-4">
@@ -22,6 +33,7 @@ export function PageHeader({
       {action && (
         <Link
           href={action.href}
+          data-tour={action.tour}
           className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-dark"
         >
           {action.label}

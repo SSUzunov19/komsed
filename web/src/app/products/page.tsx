@@ -34,13 +34,13 @@ export default async function ProductsPage({
 
   return (
     <div>
-      <PageHeader title="📦 Продукти" action={{ href: '/products/new', label: '+ Добави продукт' }} />
+      <PageHeader title="📦 Продукти" action={{ href: '/products/new', label: '+ Добави продукт', tour: 'add' }} />
 
       {error && (
         <div className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>
       )}
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden" tour="list">
         <div className="thin-scroll overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
