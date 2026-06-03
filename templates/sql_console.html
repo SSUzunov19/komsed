@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}SQL Конзола{% endblock %}
+{% block content %}
+<h2>💻 SQL Конзола</h2>
+<div class="card p-3 mt-3">
+<form method="POST">
+    <textarea name="query" class="form-control font-monospace" rows="5" placeholder="SELECT * FROM PRODUCT">{{ query }}</textarea>
+    <button class="btn btn-primary mt-2">▶ Изпълни</button>
+</form>
+</div>
+{% if error %}<div class="alert alert-danger mt-3">{{ error }}</div>{% endif %}
+{% if results is not none %}
+<div class="card mt-3"><div class="card-body p-0">
+<div class="table-responsive">
+<table class="table table-sm table-hover mb-0 font-monospace" style="font-size:0.85rem">
+    {% if results %}<thead><tr>{% for key in results[0].keys() %}<th>{{ key }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for row in results %}<tr>{% for val in row.values() %}<td>{{ val }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+    {% endif %}
+</table>
+</div>
+<p class="text-muted p-2 mb-0">Резултати: {{ results|length }} реда</p>
+</div></div>
+{% endif %}
+{% endblock %}

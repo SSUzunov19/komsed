@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}КОМСЕД{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f7fa; }
+        .navbar { background: linear-gradient(135deg, #2E4057, #048A81) !important; }
+        .navbar-brand { font-weight: bold; font-size: 1.4rem; }
+        .card { border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 10px; }
+        .stat-card { text-align: center; padding: 1.5rem; }
+        .stat-card h2 { font-size: 2.5rem; font-weight: bold; color: #048A81; }
+        .stat-card p { color: #666; margin: 0; }
+        .badge-active { background: #28a745; }
+        .badge-inactive { background: #dc3545; }
+        .table th { background: #f0f4f8; border-top: none; }
+        footer { margin-top: 3rem; padding: 1rem; text-align: center; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🧸 КОМСЕД</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/products">Продукти</a>
+                <a class="nav-link" href="/categories">Категории</a>
+                <a class="nav-link" href="/customers">Клиенти</a>
+                <a class="nav-link" href="/orders">Поръчки</a>
+                <a class="nav-link" href="/promotions">Промоции</a>
+                <a class="nav-link" href="/sql">SQL Конзола</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show">{{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <footer>КОМСЕД &copy; 2026 | Стас Узунов, 2MI0700362 | СУ „Св. Климент Охридски", ФМИ</footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

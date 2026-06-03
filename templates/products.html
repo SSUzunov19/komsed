@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Продукти{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📦 Продукти</h2>
+    <a href="/products/add" class="btn btn-success">+ Добави продукт</a>
+</div>
+<div class="card"><div class="card-body p-0">
+<table class="table table-hover mb-0">
+    <thead><tr><th>#</th><th>Име</th><th>SKU</th><th>Цена</th><th>Промо</th><th>Наличност</th><th>Марка</th><th>Статус</th><th></th></tr></thead>
+    <tbody>
+    {% for p in products %}
+    <tr>
+        <td>{{ p.PRODUCT_ID }}</td>
+        <td><strong>{{ p.NAME }}</strong></td>
+        <td><code>{{ p.SKU }}</code></td>
+        <td>{{ "%.2f"|format(p.PRICE) }} лв.</td>
+        <td>{% if p.PROMO_PRICE %}<span class="text-danger fw-bold">{{ "%.2f"|format(p.PROMO_PRICE) }} лв.</span>{% else %}-{% endif %}</td>
+        <td>{% if p.QTY_IN_STOCK > 5 %}<span class="text-success">{{ p.QTY_IN_STOCK }}</span>{% elif p.QTY_IN_STOCK > 0 %}<span class="text-warning">{{ p.QTY_IN_STOCK }}</span>{% else %}<span class="text-danger">0</span>{% endif %}</td>
+        <td>{{ p.BRAND_ID }}</td>
+        <td>{% if p.IS_ACTIVE %}<span class="badge badge-active">Активен</span>{% else %}<span class="badge badge-inactive">Неактивен</span>{% endif %}</td>
+        <td><a href="/products/delete/{{ p.PRODUCT_ID }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Сигурни ли сте?')">🗑</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div></div>
+{% endblock %}

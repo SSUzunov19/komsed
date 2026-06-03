@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Поръчки{% endblock %}
+{% block content %}
+<h2>🛒 Поръчки</h2>
+<div class="card mt-3"><div class="card-body p-0">
+<table class="table table-hover mb-0">
+    <thead><tr><th>#</th><th>Клиент</th><th>Статус</th><th>Сума</th><th>Плащане</th><th>Доставка</th><th>Артикули</th><th>Дата</th><th></th></tr></thead>
+    <tbody>
+    {% for o in orders %}
+    <tr>
+        <td>{{ o.ORDER_ID }}</td><td>{{ o.CUSTOMER_NAME }}</td>
+        <td>{% if o.STATUS == 'delivered' %}<span class="badge bg-success">{{ o.STATUS }}</span>{% elif o.STATUS == 'cancelled' %}<span class="badge bg-danger">{{ o.STATUS }}</span>{% elif o.STATUS == 'shipped' %}<span class="badge bg-info">{{ o.STATUS }}</span>{% else %}<span class="badge bg-warning text-dark">{{ o.STATUS }}</span>{% endif %}</td>
+        <td class="fw-bold">{{ "%.2f"|format(o.TOTAL) }} лв.</td><td>{{ o.PAYMENT_METHOD }}</td><td>{{ o.DELIVERY_METHOD }}</td><td>{{ o.ITEM_COUNT }}</td>
+        <td>{{ o.CREATED_AT }}</td><td><a href="/orders/{{ o.ORDER_ID }}" class="btn btn-outline-primary btn-sm">Детайли</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div></div>
+{% endblock %}

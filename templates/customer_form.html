@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Добави клиент{% endblock %}
+{% block content %}
+<h2>+ Добави клиент</h2>
+<div class="card p-4 mt-3" style="max-width:500px">
+<form method="POST">
+    <div class="mb-3"><label class="form-label">Име</label><input name="first_name" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Фамилия</label><input name="last_name" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Email</label><input name="email" type="email" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Телефон</label><input name="phone" class="form-control"></div>
+    <button class="btn btn-success">Запази</button> <a href="/customers" class="btn btn-secondary">Отказ</a>
+</form>
+</div>
+{% endblock %}

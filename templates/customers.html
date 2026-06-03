@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Клиенти{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>👥 Клиенти</h2>
+    <a href="/customers/add" class="btn btn-success">+ Добави клиент</a>
+</div>
+<div class="card"><div class="card-body p-0">
+<table class="table table-hover mb-0">
+    <thead><tr><th>#</th><th>Име</th><th>Email</th><th>Телефон</th><th>Поръчки</th></tr></thead>
+    <tbody>
+    {% for c in customers %}
+    <tr><td>{{ c.CUSTOMER_ID }}</td><td><strong>{{ c.FIRST_NAME }} {{ c.LAST_NAME }}</strong></td><td>{{ c.EMAIL }}</td><td>{{ c.PHONE or '—' }}</td><td>{{ c.ORDER_COUNT }}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div></div>
+{% endblock %}

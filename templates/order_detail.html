@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Поръчка #{{ order.ORDER_ID }}{% endblock %}
+{% block content %}
+<a href="/orders" class="btn btn-outline-secondary btn-sm mb-3">← Назад</a>
+<h2>Поръчка #{{ order.ORDER_ID }}</h2>
+<div class="row mt-3">
+    <div class="col-md-4"><div class="card p-3"><h6>Клиент</h6><p class="mb-0"><strong>{{ order.CUSTOMER_NAME }}</strong><br>{{ order.EMAIL }}</p></div></div>
+    <div class="col-md-4"><div class="card p-3"><h6>Доставка</h6><p class="mb-0">{{ order.DELIVERY_METHOD }}<br>{{ order.PAYMENT_METHOD }}</p></div></div>
+    <div class="col-md-4"><div class="card p-3"><h6>Обща сума</h6><p class="mb-0 fs-4 fw-bold" style="color:#048A81">{{ "%.2f"|format(order.TOTAL) }} лв.</p></div></div>
+</div>
+<div class="card mt-3"><div class="card-body p-0">
+<table class="table mb-0">
+    <thead><tr><th>Продукт</th><th>SKU</th><th>Кол.</th><th>Ед. цена</th><th>Промо</th></tr></thead>
+    <tbody>
+    {% for i in items %}
+    <tr><td><strong>{{ i.PRODUCT_NAME }}</strong></td><td><code>{{ i.SKU }}</code></td><td>{{ i.QUANTITY }}</td><td>{{ "%.2f"|format(i.UNIT_PRICE) }} лв.</td><td>{% if i.PROMO_PRICE %}{{ "%.2f"|format(i.PROMO_PRICE) }} лв.{% else %}-{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div></div>
+{% endblock %}

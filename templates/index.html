@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}КОМСЕД - Начало{% endblock %}
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="fw-bold" style="color:#2E4057">🧸 КОМСЕД</h1>
+    <p class="text-muted fs-5">Онлайн магазин за детски играчки и бебешки аксесоари</p>
+</div>
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.products }}</h2><p>Продукти</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.categories }}</h2><p>Категории</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.customers }}</h2><p>Клиенти</p></div></div>
+    <div class="col-md-3"><div class="card stat-card"><h2>{{ stats.orders }}</h2><p>Поръчки</p></div></div>
+</div>
+<div class="row g-4">
+    <div class="col-md-4"><div class="card p-3"><h5>📦 Продукти</h5><p class="text-muted">Преглед и управление на продуктовия каталог</p><a href="/products" class="btn btn-outline-primary btn-sm">Отвори</a></div></div>
+    <div class="col-md-4"><div class="card p-3"><h5>🛒 Поръчки</h5><p class="text-muted">Преглед на поръчки и артикули</p><a href="/orders" class="btn btn-outline-primary btn-sm">Отвори</a></div></div>
+    <div class="col-md-4"><div class="card p-3"><h5>💻 SQL Конзола</h5><p class="text-muted">Изпълнение на произволни SQL заявки</p><a href="/sql" class="btn btn-outline-primary btn-sm">Отвори</a></div></div>
+</div>
+{% endblock %}
